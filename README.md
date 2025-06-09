@@ -5,6 +5,7 @@ Hệ thống quản lý đơn hàng trực tuyến sử dụng kiến trúc Even
 
 ## 🏗️ Kiến trúc hệ thống
 ```
+EventSourcingArchitecture/
 ├── Commands/           # Command handlers và commands
 ├── Controllers/        # API Controllers
 ├── Domain/            # Domain models và business logic
@@ -23,51 +24,51 @@ Hệ thống quản lý đơn hàng trực tuyến sử dụng kiến trúc Even
 ### 🧑‍💻 **Developer 1 - Command Side (Write Model)**
 
 #### **Files cần code:**
-- [ ] `Domain/Order.cs`
-- [ ] `Domain/OrderItem.cs`
-- [ ] `Domain/OrderStatus.cs`
-- [ ] `Events/BaseEvent.cs`
-- [ ] `Events/OrderPlacedEvent.cs`
-- [ ] `Events/OrderCancelledEvent.cs` *(cần tạo mới)*
-- [ ] `Events/OrderUpdatedEvent.cs` *(cần tạo mới)*
-- [ ] `EventStore/IEventStore.cs`
-- [ ] `EventStore/InMemoryEventStore.cs`
-- [ ] `EventStore/EventModel.cs`
-- [ ] `Commands/PlaceOrderCommand.cs`
-- [ ] `Commands/PlaceOrderCommandHandler.cs`
-- [ ] `Commands/CancelOrderCommand.cs`
-- [ ] `Commands/CancelOrderCommandHandler.cs`
-- [ ] `Commands/UpdateOrderCommand.cs` *(cần tạo mới)*
-- [ ] `Commands/UpdateOrderCommandHandler.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/Domain/Order.cs`
+- [ ] `EventSourcingArchitecture/Domain/OrderItem.cs`
+- [ ] `EventSourcingArchitecture/Domain/OrderStatus.cs`
+- [ ] `EventSourcingArchitecture/Events/BaseEvent.cs`
+- [ ] `EventSourcingArchitecture/Events/OrderPlacedEvent.cs`
+- [ ] `EventSourcingArchitecture/Events/OrderCancelledEvent.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/Events/OrderUpdatedEvent.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/EventStore/IEventStore.cs`
+- [ ] `EventSourcingArchitecture/EventStore/InMemoryEventStore.cs`
+- [ ] `EventSourcingArchitecture/EventStore/EventModel.cs`
+- [ ] `EventSourcingArchitecture/Commands/PlaceOrderCommand.cs`
+- [ ] `EventSourcingArchitecture/Commands/PlaceOrderCommandHandler.cs`
+- [ ] `EventSourcingArchitecture/Commands/CancelOrderCommand.cs`
+- [ ] `EventSourcingArchitecture/Commands/CancelOrderCommandHandler.cs`
+- [ ] `EventSourcingArchitecture/Commands/UpdateOrderCommand.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/Commands/UpdateOrderCommandHandler.cs` *(cần tạo mới)*
 
 ---
 
 ### 🧑‍💻 **Developer 2 - Query Side (Read Model) & API**
 
 #### **Files cần code:**
-- [ ] `Controllers/OrderController.cs` *(cần tạo mới)*
-- [ ] `DTO/PlaceOrderDto.cs`
-- [ ] `DTO/OrderDto.cs`
-- [ ] `DTO/OrderItemDto.cs` *(cần tạo mới)*
-- [ ] `DTO/UpdateOrderDto.cs` *(cần tạo mới)*
-- [ ] `Queries/GetOrderQuery.cs` *(cần tạo mới)*
-- [ ] `Queries/GetOrdersQuery.cs` *(cần tạo mới)*
-- [ ] `Queries/OrderQueryHandler.cs` *(cần tạo mới)*
-- [ ] `ReadModel/OrderReadModel.cs`
-- [ ] `ReadModel/IReadModelRepository.cs` *(cần tạo mới)*
-- [ ] `ReadModel/InMemoryReadModelRepository.cs`
-- [ ] `EventBus/IEventBus.cs`
-- [ ] `EventBus/InMemoryEventBus.cs`
-- [ ] `EventBus/EventHandlerDelegates.cs`
+- [ ] `EventSourcingArchitecture/Controllers/OrderController.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/DTO/PlaceOrderDto.cs`
+- [ ] `EventSourcingArchitecture/DTO/OrderDto.cs`
+- [ ] `EventSourcingArchitecture/DTO/OrderItemDto.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/DTO/UpdateOrderDto.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/Queries/GetOrderQuery.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/Queries/GetOrdersQuery.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/Queries/OrderQueryHandler.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/ReadModel/OrderReadModel.cs`
+- [ ] `EventSourcingArchitecture/ReadModel/IReadModelRepository.cs` *(cần tạo mới)*
+- [ ] `EventSourcingArchitecture/ReadModel/InMemoryReadModelRepository.cs`
+- [ ] `EventSourcingArchitecture/EventBus/IEventBus.cs`
+- [ ] `EventSourcingArchitecture/EventBus/InMemoryEventBus.cs`
+- [ ] `EventSourcingArchitecture/EventBus/EventHandlerDelegates.cs`
 
 ---
 
 ## 🤝 **Shared Files (Cần phối hợp)**
 
 ### **Files cả 2 người cần làm việc cùng:**
-- [ ] `Infrastructure/DependencyInjection.cs` - DI configuration
-- [ ] `Program.cs` - Application startup configuration
-- [ ] `appsettings.json` / `appsettings.Development.json` - Configuration
+- [ ] `EventSourcingArchitecture/Infrastructure/DependencyInjection.cs` - DI configuration
+- [ ] `EventSourcingArchitecture/Program.cs` - Application startup configuration
+- [ ] `EventSourcingArchitecture/appsettings.json` / `appsettings.Development.json` - Configuration
 
 ### **Integration Points cần sync:**
 - **Interfaces**: Đảm bảo IEventStore, IEventBus, IReadModelRepository contracts đúng
@@ -91,7 +92,8 @@ Hệ thống quản lý đơn hàng trực tuyến sử dụng kiến trúc Even
 
 ### Setup
 ```bash
-git clone <repository-url>
+git clone https://github.com/flourineV/OnlineOrderSystem.git
+cd EventSourcingArchitecture
 cd EventSourcingArchitecture
 dotnet restore
 dotnet build
