@@ -1,21 +1,20 @@
 ﻿using OnlineOrderSystem.Domain;
 
-namespace OnlineOrderSystem.ReadModel
+namespace OnlineOrderSystem.DTO
 {
-    public class OrderReadModel
+    public class OrderResponse
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
-        public List<OrderItemReadModel> Items { get; set; } = new();
+        public List<OrderItemResponse> Items { get; set; } = new();
         public OrderStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public decimal TotalAmount { get; set; }
         public string ShippingAddress { get; set; } = string.Empty;
-        public int Version { get; set; }
     }
 
-    public class OrderItemReadModel
+    public class OrderItemResponse
     {
         public Guid ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;

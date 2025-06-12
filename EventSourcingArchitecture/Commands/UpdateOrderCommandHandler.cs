@@ -1,40 +1,40 @@
 ﻿using OnlineOrderSystem.Domain;
-using OnlineOrderSystem.EventBus;
 using OnlineOrderSystem.EventStore;
+using OnlineOrderSystem.EventBus;
 
 namespace OnlineOrderSystem.Commands
 {
-    public class CancelOrderCommandHandler
+    public class UpdateOrderCommandHandler
     {
         private readonly IEventStore _eventStore;
         private readonly IEventBus _eventBus;
-        private readonly ILogger<CancelOrderCommandHandler> _logger;
+        private readonly ILogger<UpdateOrderCommandHandler> _logger;
 
-        public CancelOrderCommandHandler(
+        public UpdateOrderCommandHandler(
             IEventStore eventStore,
             IEventBus eventBus,
-            ILogger<CancelOrderCommandHandler> logger)
+            ILogger<UpdateOrderCommandHandler> logger)
         {
             _eventStore = eventStore;
             _eventBus = eventBus;
             _logger = logger;
         }
 
-        public async Task Handle(CancelOrderCommand command)
+        public async Task Handle(UpdateOrderCommand command)
         {
-            _logger.LogInformation("Handling CancelOrderCommand for order {OrderId}", command.OrderId);
+            _logger.LogInformation("Handling UpdateOrderCommand for order {OrderId}", command.OrderId);
 
-            // Load order từ events
+            // Load order từ events (Event Sourcing)
             var events = await _eventStore.GetEventsAsync(command.OrderId);
             var order = Order.FromEvents(events);
 
-            // Business logic - cancel order
-            order.Cancel(command.Reason);
+            // Business logic - update items
+            order.UpdateItems(command.Items);
 
             // Lấy new events
             var newEvents = order.GetUncommittedEvents();
 
-            // Lưu events
+            // Lưu events với version check
             await _eventStore.SaveEventsAsync(order.Id, newEvents, order.Version - newEvents.Count());
 
             // Publish events
@@ -42,7 +42,7 @@ namespace OnlineOrderSystem.Commands
 
             order.ClearUncommittedEvents();
 
-            _logger.LogInformation("Order {OrderId} cancelled successfully", command.OrderId);
+            _logger.LogInformation("Order {OrderId} updated successfully", command.OrderId);
         }
     }
 }
