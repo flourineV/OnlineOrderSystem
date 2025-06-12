@@ -1,147 +1,87 @@
 # Online Order System - Event Sourcing Architecture
 
-## 📋 Tổng quan dự án
-Hệ thống quản lý đơn hàng trực tuyến sử dụng kiến trúc Event Sourcing với ASP.NET Core 8.0. Dự án áp dụng các pattern CQRS (Command Query Responsibility Segregation), Event Sourcing, và Domain-Driven Design.
+## Tổng quan
+Hệ thống quản lý đơn hàng với kiến trúc **Event Sourcing + CQRS** sử dụng ASP.NET Core 8.0.
 
-## 🏗️ Kiến trúc hệ thống
+## Cấu trúc Project
 ```
 EventSourcingArchitecture/
-├── Commands/           # Command handlers và commands
-├── Controllers/        # API Controllers
-├── Domain/            # Domain models và business logic
-├── DTO/               # Data Transfer Objects
-├── EventBus/          # Event publishing và handling
-├── Events/            # Domain events
-├── EventStore/        # Event storage implementation
-├── Infrastructure/    # Dependency injection và configuration
-├── Queries/           # Query handlers
-├── ReadModel/         # Read model repositories
-└── Properties/        # Application properties
+├── Controllers/        # API Controllers (Write + Read)
+├── Commands/          # Command handlers
+├── Domain/           # Business logic & Aggregates
+├── DTO/              # Data Transfer Objects
+├── Events/           # Domain Events
+├── EventStore/       # Event Storage
+├── EventBus/         # Event Publishing
+├── Queries/          # Query handlers (TODO)
+└── ReadModel/        # Read Models (TODO)
 ```
 
-## 👥 Phân chia công việc cho Team (2 người)
+## **COMMAND SIDE**
 
-### 🧑‍💻 **Developer 1 - Command Side (Write Model)**
+### **API Layer**
+- `Controllers/OrderWriteController.cs` - 3 endpoints (POST, PUT, DELETE)
 
-#### **Files cần code:**
-- [ ] `EventSourcingArchitecture/Domain/Order.cs`
-- [ ] `EventSourcingArchitecture/Domain/OrderItem.cs`
-- [ ] `EventSourcingArchitecture/Domain/OrderStatus.cs`
-- [ ] `EventSourcingArchitecture/Events/BaseEvent.cs`
-- [ ] `EventSourcingArchitecture/Events/OrderPlacedEvent.cs`
-- [ ] `EventSourcingArchitecture/Events/OrderCancelledEvent.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/Events/OrderUpdatedEvent.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/EventStore/IEventStore.cs`
-- [ ] `EventSourcingArchitecture/EventStore/InMemoryEventStore.cs`
-- [ ] `EventSourcingArchitecture/EventStore/EventModel.cs`
-- [ ] `EventSourcingArchitecture/Commands/PlaceOrderCommand.cs`
-- [ ] `EventSourcingArchitecture/Commands/PlaceOrderCommandHandler.cs`
-- [ ] `EventSourcingArchitecture/Commands/CancelOrderCommand.cs`
-- [ ] `EventSourcingArchitecture/Commands/CancelOrderCommandHandler.cs`
-- [ ] `EventSourcingArchitecture/Commands/UpdateOrderCommand.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/Commands/UpdateOrderCommandHandler.cs` *(cần tạo mới)*
+### **DTO Layer**
+- `DTO/PlaceOrderRequest.cs` + `OrderItemRequest`
+- `DTO/UpdateOrderRequest.cs`
+- `DTO/CancelOrderRequest.cs`
+- `DTO/OrderResponse.cs`
+- `DTO/ApiErrorResponse.cs`
 
----
+### **Command Layer**
+- `Commands/PlaceOrderCommand.cs`
+- `Commands/UpdateOrderCommand.cs`
+- `Commands/CancelOrderCommand.cs`
+- `Commands/PlaceOrderCommandHandler.cs`
+- `Commands/UpdateOrderCommandHandler.cs`
+- `Commands/CancelOrderCommandHandler.cs`
 
-### 🧑‍💻 **Developer 2 - Query Side (Read Model) & API**
+### **Domain Layer**
+- `Domain/Order.cs` - Aggregate Root với Event Sourcing
+- `Domain/OrderItem.cs` - Value Object
+- `Domain/OrderStatus.cs` - Enum
 
-#### **Files cần code:**
-- [ ] `EventSourcingArchitecture/Controllers/OrderController.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/DTO/PlaceOrderDto.cs`
-- [ ] `EventSourcingArchitecture/DTO/OrderDto.cs`
-- [ ] `EventSourcingArchitecture/DTO/OrderItemDto.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/DTO/UpdateOrderDto.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/Queries/GetOrderQuery.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/Queries/GetOrdersQuery.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/Queries/OrderQueryHandler.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/ReadModel/OrderReadModel.cs`
-- [ ] `EventSourcingArchitecture/ReadModel/IReadModelRepository.cs` *(cần tạo mới)*
-- [ ] `EventSourcingArchitecture/ReadModel/InMemoryReadModelRepository.cs`
-- [ ] `EventSourcingArchitecture/EventBus/IEventBus.cs`
-- [ ] `EventSourcingArchitecture/EventBus/InMemoryEventBus.cs`
-- [ ] `EventSourcingArchitecture/EventBus/EventHandlerDelegates.cs`
+### **Events Layer**
+- `Events/BaseEvent.cs`
+- `Events/OrderPlacedEvent.cs`
+- `Events/OrderUpdatedEvent.cs`
+- `Events/OrderCancelledEvent.cs`
 
----
+### **Infrastructure Layer**
+- `EventStore/IEventStore.cs` + `InMemoryEventStore.cs`
+- `EventBus/IEventBus.cs` + `InMemoryEventBus.cs`
+- `EventStore/EventModel.cs`
 
-## 🤝 **Shared Files (Cần phối hợp)**
+## **QUERY SIDE**
 
-### **Files cả 2 người cần làm việc cùng:**
-- [ ] `EventSourcingArchitecture/Infrastructure/DependencyInjection.cs` - DI configuration
-- [ ] `EventSourcingArchitecture/Program.cs` - Application startup configuration
-- [ ] `EventSourcingArchitecture/appsettings.json` / `appsettings.Development.json` - Configuration
+## **API Endpoints**
 
-### **Integration Points cần sync:**
-- **Interfaces**: Đảm bảo IEventStore, IEventBus, IReadModelRepository contracts đúng
-- **DTOs**: Command DTOs phải match với Domain models
-- **Events**: Event structure phải consistent giữa Command và Query side
-- **Error Handling**: Unified error response format
+### **Command Side (Write)**
+```http
+POST   /api/orders          # Tạo đơn hàng mới
+PUT    /api/orders/{id}      # Cập nhật đơn hàng
+DELETE /api/orders/{id}      # Hủy đơn hàng
+```
 
-## 🛠️ Tech Stack
+### **Query Side (Read)**
+```http
+GET    /api/orders/{id}      # Lấy đơn hàng theo ID
+GET    /api/orders           # Lấy danh sách đơn hàng
+```
+
+## **Tech Stack**
 - **Framework**: ASP.NET Core 8.0
-- **Architecture**: Event Sourcing + CQRS
-- **Storage**: In-Memory (có thể mở rộng sang SQL Server/PostgreSQL)
-- **API**: RESTful API với Swagger
-- **Testing**: xUnit (sẽ thêm sau)
+- **Architecture**: Event Sourcing + EDA + CQRS
+- **Storage**: In-Memory
+- **API**: RESTful với Swagger
 
-## 🚀 Getting Started
-
-### Prerequisites
-- .NET 8.0 SDK
-- Visual Studio 2022 hoặc VS Code
-- Git
-
-### Setup
+## 🚀 **Getting Started**
 ```bash
-git clone https://github.com/flourineV/OnlineOrderSystem.git
-cd EventSourcingArchitecture
+git clone <repository-url>
 cd EventSourcingArchitecture
 dotnet restore
 dotnet build
 dotnet run
 ```
 
-### API Endpoints (Sẽ implement)
-```
-POST /api/orders          # Place new order
-GET  /api/orders/{id}     # Get order by ID
-GET  /api/orders          # Get all orders
-PUT  /api/orders/{id}     # Update order
-DELETE /api/orders/{id}   # Cancel order
-```
-
-## 📝 Notes
-- Tuân thủ SOLID principles
-- Implement proper error handling
-- Add logging cho tất cả operations
-- Code review trước khi merge
-- Unit tests cho business logic
-- Integration tests cho API endpoints
-
-## 📋 **Task Summary**
-
-### **Developer 1 (Command Side)**: 16 files
-- Domain models (3 files)
-- Events (4 files)
-- Event Store (3 files)
-- Commands (6 files)
-
-### **Developer 2 (Query Side & API)**: 14 files
-- Controllers & DTOs (5 files)
-- Queries (3 files)
-- Read Models (3 files)
-- Event Bus (3 files)
-
-### **Shared**: 3 files
-- Infrastructure setup
-- Application configuration
-
----
-
-## 🤝 **Collaboration Notes**
-- **Code review**: Bắt buộc cho shared files
-- **Interface contracts**: Sync trước khi implement
-- **Branch naming**: `feature/dev1-command/...` hoặc `feature/dev2-query/...`
-- **Dependencies**: Developer 2 cần interfaces từ Developer 1 trước
-
----
-**Team**: 2 Developers | **Total**: 33 files
