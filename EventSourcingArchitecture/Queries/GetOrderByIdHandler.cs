@@ -17,6 +17,12 @@ namespace OnlineOrderSystem.Queries
             _logger.LogInformation("Handling GetOrderByIdQuery for order {OrderId}", query.OrderId);
             var order = await _readModel.GetByIdAsync(query.OrderId);
 
+            if (order == null)
+            {
+                _logger.LogWarning("Order {OrderId} not found", query.OrderId);
+                throw new KeyNotFoundException($"Order with ID {query.OrderId} not found.");
+            }
+
             var orderResponse = new OrderResponse
             {
                 Id = order.Id,

@@ -13,9 +13,8 @@ namespace OnlineOrderSystem.ReadModel
         Task DeleteAsync(Guid id);
     }
 
-    public interface IOrderReadModelRepository
+    public interface IOrderReadModelRepository : IReadModelRepository<OrderReadModel>
     {
         Task<IEnumerable<OrderReadModel>> GetByStatusAsync(OrderStatus status);
-        Task<OrderReadModel> GetByIdAsync(Guid orderId);
     }
 }
