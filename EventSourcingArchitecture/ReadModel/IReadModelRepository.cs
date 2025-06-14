@@ -16,6 +16,5 @@ namespace OnlineOrderSystem.ReadModel
     public interface IOrderReadModelRepository : IReadModelRepository<OrderReadModel>
     {
         Task<IEnumerable<OrderReadModel>> GetByStatusAsync(OrderStatus status);
-        Task<IEnumerable<OrderReadModel>> GetByCustomerIdAsync(Guid customerId);
     }
 }
