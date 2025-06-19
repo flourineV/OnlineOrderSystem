@@ -4,8 +4,8 @@ namespace OnlineOrderSystem.Events
 {
     public class OrderUpdatedEvent : BaseEvent
     {
-        public List<OrderItem> Items { get; private set; }
-        public decimal TotalAmount { get; private set; }
+        public List<OrderItem> Items { get; set; } = new();
+        public decimal TotalAmount { get; set; }
 
         // Constructor cho khi tạo event mới
         public OrderUpdatedEvent(
@@ -19,7 +19,10 @@ namespace OnlineOrderSystem.Events
             TotalAmount = totalAmount;
         }
 
-        // For deserialization
-        private OrderUpdatedEvent() : base() { }
+        // Parameterless constructor for JSON deserialization
+        public OrderUpdatedEvent() : base()
+        {
+            Items = new List<OrderItem>();
+        }
     }
 }

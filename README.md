@@ -1,82 +1,64 @@
 # Online Order System - Event Sourcing Architecture
 
 ## Tổng quan
-Hệ thống quản lý đơn hàng với kiến trúc **Event Sourcing + CQRS** sử dụng ASP.NET Core 8.0.
+Hệ thống quản lý đơn hàng demo với kiến trúc **Event Sourcing + CQRS** sử dụng ASP.NET Core 8.0.
 
-## Cấu trúc Project
-```
-EventSourcingArchitecture/
-├── Controllers/        # API Controllers (Write + Read)
-├── Commands/          # Command handlers
-├── Domain/           # Business logic & Aggregates
-├── DTO/              # Data Transfer Objects
-├── Events/           # Domain Events
-├── EventStore/       # Event Storage
-├── EventBus/         # Event Publishing
-├── Queries/          # Query handlers (TODO)
-└── ReadModel/        # Read Models (TODO)
-```
+**Đặc trưng chính:**
+- **Event Sourcing**: Lưu trữ events thay vì state
+- **CQRS**: Tách biệt Command (Write) và Query (Read)
+- **Event Store**: Audit trail và traceability đầy đủ
+- **Optimistic Concurrency**: Version control cho events
+- **Real-time Sync**: Event Bus đồng bộ Read Models
 
-## **COMMAND SIDE**
+## Chức năng chính
 
-### **API Layer**
-- `Controllers/OrderWriteController.cs` - 3 endpoints (POST, PUT, DELETE)
+### **Quản lý đơn hàng**
+- Tạo đơn hàng mới với nhiều sản phẩm
+- Cập nhật items trong đơn hàng
+- Hủy đơn hàng với lý do
+- Xem chi tiết đơn hàng và danh sách tất cả orders
 
-### **DTO Layer**
-- `DTO/PlaceOrderRequest.cs` + `OrderItemRequest`
-- `DTO/UpdateOrderRequest.cs`
-- `DTO/CancelOrderRequest.cs`
-- `DTO/OrderResponse.cs`
-- `DTO/ApiErrorResponse.cs`
+### **Event Sourcing & Traceability**
+- Xem lịch sử events của từng đơn hàng
+- Audit trail đầy đủ với timestamp và version
+- Thống kê Event Store (tổng events, orders, event types)
+- State reconstruction từ events
 
-### **Command Layer**
-- `Commands/PlaceOrderCommand.cs`
-- `Commands/UpdateOrderCommand.cs`
-- `Commands/CancelOrderCommand.cs`
-- `Commands/PlaceOrderCommandHandler.cs`
-- `Commands/UpdateOrderCommandHandler.cs`
-- `Commands/CancelOrderCommandHandler.cs`
+### **CQRS Performance**
+- **Write Side**: Event Sourcing với business logic validation
+- **Read Side**: Pre-computed Read Models cho query nhanh
+- **Event Bus**: Auto-sync giữa Write và Read side
 
-### **Domain Layer**
-- `Domain/Order.cs` - Aggregate Root với Event Sourcing
-- `Domain/OrderItem.cs` - Value Object
-- `Domain/OrderStatus.cs` - Enum
+## 📡 API Endpoints
 
-### **Events Layer**
-- `Events/BaseEvent.cs`
-- `Events/OrderPlacedEvent.cs`
-- `Events/OrderUpdatedEvent.cs`
-- `Events/OrderCancelledEvent.cs`
-
-### **Infrastructure Layer**
-- `EventStore/IEventStore.cs` + `InMemoryEventStore.cs`
-- `EventBus/IEventBus.cs` + `InMemoryEventBus.cs`
-- `EventStore/EventModel.cs`
-
-## **QUERY SIDE**
-
-## **API Endpoints**
-
-### **Command Side (Write)**
+### **Command Side (Write Operations)**
 ```http
 POST   /api/orders          # Tạo đơn hàng mới
-PUT    /api/orders/{id}      # Cập nhật đơn hàng
+PUT    /api/orders/{id}      # Cập nhật items đơn hàng
 DELETE /api/orders/{id}      # Hủy đơn hàng
 ```
 
-### **Query Side (Read)**
+### **Query Side (Read Operations)**
 ```http
-GET    /api/orders/{id}      # Lấy đơn hàng theo ID
-GET    /api/orders           # Lấy danh sách đơn hàng
+GET    /api/orders           # Lấy danh sách tất cả đơn hàng
+GET    /api/orders/{id}      # Lấy chi tiết đơn hàng theo ID
 ```
 
-## **Tech Stack**
-- **Framework**: ASP.NET Core 8.0
-- **Architecture**: Event Sourcing + EDA + CQRS
-- **Storage**: In-Memory
-- **API**: RESTful với Swagger
+### **Debug & Event Store (Development)**
+```http
+GET    /api/debug/events           # Xem tất cả events trong store
+GET    /api/debug/events/{orderId} # Xem events của 1 order cụ thể
+GET    /api/debug/store-stats      # Thống kê Event Store
+```
 
-## 🚀 **Getting Started**
+## Tech Stack
+- **Framework**: ASP.NET Core 8.0
+- **Architecture**: Event Sourcing + CQRS + Event-Driven Architecture
+- **Storage**: In-Memory (Event Store + Read Models)
+- **API**: RESTful với Swagger UI
+- **Patterns**: Aggregate Root, Domain Events, Optimistic Concurrency
+
+## Command Line Setup
 ```bash
 git clone <repository-url>
 cd EventSourcingArchitecture
@@ -84,4 +66,5 @@ dotnet restore
 dotnet build
 dotnet run
 ```
+
 

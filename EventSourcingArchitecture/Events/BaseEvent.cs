@@ -2,11 +2,11 @@
 {
     public abstract class BaseEvent
     {
-        public Guid Id { get; protected set; }
-        public Guid AggregateId { get; protected set; }
-        public DateTime OccurredOn { get; protected set; }
-        public int Version { get; protected set; }
-        public string EventType { get; protected set; }
+        public Guid Id { get; set; }
+        public Guid AggregateId { get; set; }
+        public DateTime OccurredOn { get; set; }
+        public int Version { get; set; }
+        public string EventType { get; set; } = string.Empty;
 
         protected BaseEvent(Guid aggregateId, int version)
         {

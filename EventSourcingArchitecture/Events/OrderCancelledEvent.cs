@@ -2,7 +2,7 @@
 {
     public class OrderCancelledEvent : BaseEvent
     {
-        public string Reason { get; private set; }
+        public string Reason { get; set; } = string.Empty;
 
         // Constructor cho khi tạo event mới
         public OrderCancelledEvent(
@@ -14,7 +14,10 @@
             Reason = reason ?? string.Empty;
         }
 
-        // For deserialization
-        private OrderCancelledEvent() : base() { }
+        // Parameterless constructor for JSON deserialization
+        public OrderCancelledEvent() : base()
+        {
+            Reason = string.Empty;
+        }
     }
 }
