@@ -18,7 +18,7 @@ namespace OnlineOrderSystem.ReadModel
     public class OrderItemReadModel
     {
         public Guid ProductId { get; set; }
-        public string ProductName { get; set; } = string.Empty;
+        public Product? Product { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public decimal Subtotal { get; set; }

@@ -10,11 +10,14 @@ namespace OnlineOrderSystem.ReadModel
     public class InMemoryReadModelRepository : IOrderReadModelRepository
     {
         private readonly List<OrderReadModel> _orders = [];
-        public InMemoryReadModelRepository(IEventBus eventBus)
+        private readonly IProductRepository _productRepository;
+
+        public InMemoryReadModelRepository(IEventBus eventBus, IProductRepository productRepository)
         {
             eventBus.Subscribe<OrderPlacedEvent>(HandleOrderPlacedEvent);
             eventBus.Subscribe<OrderCancelledEvent>(HandleOrderCancelledEvent);
             eventBus.Subscribe<OrderUpdatedEvent>(HandleOrderUpdatedEvent);
+            _productRepository = productRepository;
         }
 
         private async Task HandleOrderUpdatedEvent(OrderUpdatedEvent @event)
@@ -30,7 +33,7 @@ namespace OnlineOrderSystem.ReadModel
                 readModel.Items = [.. @event.Items.Select(item => new OrderItemReadModel
                     {
                         ProductId = item.ProductId,
-                        ProductName = item.ProductName,
+                        Product = _productRepository.GetById(item.ProductId),
                         Price = item.Price,
                         Quantity = item.Quantity,
                         Subtotal = item.Subtotal
@@ -61,7 +64,7 @@ namespace OnlineOrderSystem.ReadModel
                 Items = [.. @event.Items.Select(item => new OrderItemReadModel
                     {
                         ProductId = item.ProductId,
-                        ProductName = item.ProductName,
+                        Product = _productRepository.GetById(item.ProductId),
                         Price = item.Price,
                         Quantity = item.Quantity,
                         Subtotal = item.Subtotal
