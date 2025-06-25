@@ -14,15 +14,18 @@ namespace OnlineOrderSystem.Controllers
         private readonly GetOrderByIdHandler _getOrderByIdHandler;
         private readonly IOrderReadModelRepository _readModelRepository;
         private readonly ILogger<OrderReadController> _logger;
+        private readonly IProductRepository _productRepository;
 
         public OrderReadController(
             GetOrderByIdHandler getOrderByIdHandler,
             IOrderReadModelRepository readModelRepository,
-            ILogger<OrderReadController> logger)
+            ILogger<OrderReadController> logger,
+            IProductRepository productRepository)
         {
             _getOrderByIdHandler = getOrderByIdHandler;
             _readModelRepository = readModelRepository;
             _logger = logger;
+            _productRepository = productRepository;
         }
 
         [HttpGet]
@@ -41,7 +44,7 @@ namespace OnlineOrderSystem.Controllers
                     Items = rm.Items.Select(item => new OrderItemResponse
                     {
                         ProductId = item.ProductId,
-                        ProductName = item.ProductName,
+                        Product = _productRepository.GetById(item.ProductId),
                         Price = item.Price,
                         Quantity = item.Quantity,
                         Subtotal = item.Subtotal

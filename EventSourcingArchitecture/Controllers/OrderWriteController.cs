@@ -41,7 +41,6 @@ namespace OnlineOrderSystem.Controllers
                     request.CustomerId,
                     request.Items.Select(item => new OrderItem( // ✅ Bỏ Domain. prefix
                         item.ProductId,
-                        item.ProductName,
                         item.Price,
                         item.Quantity
                     )).ToList(),
@@ -82,7 +81,6 @@ namespace OnlineOrderSystem.Controllers
                     id,
                     request.Items.Select(item => new OrderItem(
                         item.ProductId,
-                        item.ProductName,
                         item.Price,
                         item.Quantity
                     )).ToList()

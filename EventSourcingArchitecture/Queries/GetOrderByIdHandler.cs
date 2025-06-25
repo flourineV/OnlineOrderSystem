@@ -35,7 +35,6 @@ namespace OnlineOrderSystem.Queries
             orderResponse.Items = [.. order.Items.Select(item => new OrderItemResponse
             {
                 ProductId = item.ProductId,
-                ProductName = item.ProductName,
                 Price = item.Price,
                 Quantity = item.Quantity,
                 Subtotal = item.Subtotal

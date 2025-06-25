@@ -41,6 +41,8 @@ builder.Services.AddScoped<GetOrderByIdHandler>();
 // Register Read Model Repository
 builder.Services.AddSingleton<IOrderReadModelRepository, InMemoryReadModelRepository>();
 
+builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
